@@ -1,0 +1,25 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+
+  "compilerOptions": {
+    "target": "es6", // ECMAScript 버전
+//    "module": "ESNext", // 모듈 시스템
+    "module": "CommonJS", // 모듈 시스템
+    "baseUrl": "/src", // 프로젝트 루트
+    "paths": {
+      "@/*": ["/src/*"], // src 폴더의 절대경로 설정
+      "@components/*": ["/src/components/*"] // components 폴더의 절대경로 설정
+    },
+    "strict": true, // 엄격한 타입 체크
+    "esModuleInterop": true, // ES 모듈 호환성
+    "skipLibCheck": true, // 라이브러리 검사 건너뛰기
+    "forceConsistentCasingInFileNames": true // 파일 이름 일관성 유지
+  },
+  "include": ["src"], // src 폴더 포함
+  "exclude": ["node_modules"] // node_modules 제외
+
+}
