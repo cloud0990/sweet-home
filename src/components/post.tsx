@@ -1,8 +1,18 @@
 import {IPost} from "./timeline.tsx";
 import {auth, db, storage} from "../firebase.ts";
-import {deleteDoc, deleteField, doc, updateDoc} from "firebase/firestore"
+import {
+    collection,
+    deleteDoc,
+    deleteField,
+    doc,
+    onSnapshot,
+    query,
+    Unsubscribe,
+    updateDoc,
+    where
+} from "firebase/firestore"
 import {deleteObject, getDownloadURL, ref, uploadBytes} from "firebase/storage";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     AttachFileInput,
     AttachFileLabel,
@@ -31,13 +41,13 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
 
     const [isLoading, setLoading] = useState(false);
     const [isFormVisible, setFormVisible] = useState(false);
+    const [isDetails, setDetails] = useState(false);
 
     const [dPhoto, setDPhoto ] = useState(false);
-
     const [uPost, setUPost] = useState(post || "");
     const [uFile, setUFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [isDetails, setDetails] = useState(false);
+    const [avatar, setAvatar] = useState<string | null>(null);
 
     const onPostUpdateClick = () => {
         setFormVisible(!isFormVisible);
@@ -56,6 +66,7 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
                 await deleteObject(photoRef);
             }
         } catch (e) {
+            console.log(e)
         }
     };
     const onPostChange = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -115,14 +126,34 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
         setDetails(!isDetails);
     }
 
+    useEffect(() => {
+        let unsubscribe : Unsubscribe | null = null;
+        const postQuery = query(
+            collection(db, "users"),
+            where("userId", "==", userId),
+        );
+
+        unsubscribe = onSnapshot(postQuery, (snapshot) => {
+            const avatarURL = snapshot.docs.map((doc) => doc.data().avatarURL);
+            if (avatarURL) {
+                setAvatar(avatarURL[0]);
+            }
+        });
+        console.log(user?.photoURL)
+
+        return() => {
+            unsubscribe && unsubscribe();
+        }
+    }, [userId]);
+
     return (
         <Wrapper>
             <Column>
                 <User>
                     {/*<Link to={`/profile/${user?.uid}`}>*/}
                     <Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit'}}>
-                        { user?.photoURL && user?.uid === userId
-                            ? <AvatarImg src={ user?.photoURL } />
+                        { avatar
+                            ? <AvatarImg src={ avatar } />
                             : <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
                               </svg>

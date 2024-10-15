@@ -2,10 +2,11 @@ import * as React from "react";
 import {useState} from "react";
 import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
 import {FirebaseError} from "firebase/app";
-import {auth} from "../firebase.ts";
+import {auth, db} from "../firebase.ts";
 import {Link, useNavigate} from "react-router-dom";
 import {Error, Form, Input, Switcher, Title, Wrapper} from "../styles/auth-components.ts";
 import GoogleButton from "../components/google-btn.tsx";
+import {doc, setDoc} from "firebase/firestore";
 
 export default function CreateAccount() {
     const navigate = useNavigate();
@@ -43,7 +44,20 @@ export default function CreateAccount() {
           await updateProfile(credentials.user, {
               displayName: name,
           });
-          navigate("/");
+
+          const user = auth.currentUser;
+          if (user) {
+              await setDoc(doc(db, "users", user?.uid), {
+                  userId: user?.uid,
+                  userName: user?.displayName,
+                  email: user?.email,
+                  avatarURL: user?.photoURL,
+                  phoneNumber: user?.phoneNumber,
+                  providerId: user?.providerId,
+              });
+          }
+
+          // navigate("/");
       } catch (e) {
           if (e instanceof FirebaseError) {
               setError(e.message);
@@ -52,7 +66,6 @@ export default function CreateAccount() {
       } finally {
           setLoading(false);
       }
-
     };
 
     return (

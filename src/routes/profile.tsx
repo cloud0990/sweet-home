@@ -92,6 +92,11 @@ export default function Profile() {
                 photoURL: avatarUrl,
             });
             setAvatar(avatarUrl);
+
+            await updateDoc(doc(db, "users", user?.uid), {
+                avatarURL: avatarUrl,
+            });
+
             onContextMenuToggle();
         }
     };
@@ -108,6 +113,10 @@ export default function Profile() {
                 photoURL: "",
             });
             setAvatar("");
+
+            await updateDoc(doc(db, "users", user?.uid), {
+                avatarURL: "",
+            });
         }
         setDetails(false);
     };
