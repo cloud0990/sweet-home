@@ -5,6 +5,7 @@ import {updateProfile} from "firebase/auth";
 import {collection, limit, onSnapshot, orderBy, query, Unsubscribe, where, updateDoc, doc} from "firebase/firestore";
 import {IPost} from '../components/timeline.tsx';
 import Post from "../components/post.tsx";
+import {AvatarImg} from "../styles/common/common-components.ts"
 import {
     Wrapper,
     Details,
@@ -12,7 +13,6 @@ import {
     Column,
     Button,
     Input,
-    AvatarImg,
     AvatarInput,
     Username,
     Error,

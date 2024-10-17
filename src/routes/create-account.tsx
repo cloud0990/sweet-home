@@ -57,7 +57,7 @@ export default function CreateAccount() {
               });
           }
 
-          // navigate("/");
+          navigate("/");
       } catch (e) {
           if (e instanceof FirebaseError) {
               setError(e.message);

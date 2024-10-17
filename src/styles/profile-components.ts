@@ -74,30 +74,16 @@ export const Column = styled.div`
     }
   }
 `;
-export const AvatarImg = styled.img`
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 export const AvatarInput = styled.input`
   display: none;
   width: 100%;
 `;
-
 export const Username = styled.span`
   font-size: 22px;
   @media (max-width: 480px) {
     font-size: 18px;
   }
 `;
-
 export const Input = styled.input`
   width: 50%;
   font-size: 20px;

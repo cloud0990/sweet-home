@@ -13,24 +13,25 @@ import {
 } from "firebase/firestore"
 import {deleteObject, getDownloadURL, ref, uploadBytes} from "firebase/storage";
 import React, {useEffect, useState} from "react";
+import {AvatarImg} from "../styles/common/common-components.ts"
 import {
     AttachFileInput,
     AttachFileLabel,
-    AvatarImg,
     CancelBtn,
     Column,
     DeletePhoto,
+    Detail,
+    Details,
     Form,
     Payload,
     Photo,
-    Section, Setting,
+    Section,
+    Setting,
     SubmitBtn,
     TextArea,
     User,
     Username,
     Wrapper,
-    Details,
-    Detail,
 } from "../styles/post-components.ts";
 import {Link} from "react-router-dom";
 
@@ -42,7 +43,6 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
     const [isLoading, setLoading] = useState(false);
     const [isFormVisible, setFormVisible] = useState(false);
     const [isDetails, setDetails] = useState(false);
-
     const [dPhoto, setDPhoto ] = useState(false);
     const [uPost, setUPost] = useState(post || "");
     const [uFile, setUFile] = useState<File | null>(null);
@@ -50,6 +50,15 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
     const [avatar, setAvatar] = useState<string | null>(null);
 
     const onPostUpdateClick = () => {
+        setDetails(false);
+        setFormVisible(!isFormVisible);
+        setUPost(post || "");
+        setUFile(null);
+        setDPhoto(false);
+        setPreviewUrl(photo || "");
+    };
+    const onPostCancelClick = () => {
+        setDetails(false);
         setFormVisible(!isFormVisible);
         setUPost(post || "");
         setUFile(null);
@@ -139,8 +148,6 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
                 setAvatar(avatarURL[0]);
             }
         });
-        console.log(user?.photoURL)
-
         return() => {
             unsubscribe && unsubscribe();
         }
@@ -150,8 +157,12 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
         <Wrapper>
             <Column>
                 <User>
-                    {/*<Link to={`/profile/${user?.uid}`}>*/}
-                    <Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit'}}>
+                    <Link to={
+                        user && user?.uid === userId
+                        ? `/profile`
+                        : `/profile/${user?.uid}`
+                    } style={{ textDecoration: 'none', color: 'inherit'}}>
+                    {/*<Link to={`/profile`} style={{ textDecoration: 'none', color: 'inherit'}}>*/}
                         { avatar
                             ? <AvatarImg src={ avatar } />
                             : <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -167,24 +178,13 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
                                 <TextArea onChange={ onPostChange } rows={3} maxLength={180} required value={ uPost } />
                                 <AttachFileLabel htmlFor="fileUpdate">{ uFile ? "업로드 완료" : "사진 업로드" }</AttachFileLabel>
                                 <AttachFileInput onChange={ onFileChange } type="file" id="fileUpdate" accept="image/*"/>
-                                <SubmitBtn type="submit" value={ isLoading ? "수정 중..." : "수정" }/>
-                                <CancelBtn onClick={ onPostUpdateClick }>취소</CancelBtn>
+                                <SubmitBtn type="submit" value={ isLoading ? "업데이트 중..." : "확인" }/>
+                                <CancelBtn onClick={ onPostCancelClick }>취소</CancelBtn>
                             </Section>
                         </Form>
                     ) : (
                     <Payload>{ post }</Payload>
                     )
-                }
-            </Column>
-            <Column className="photo-container">
-                { photo && !isFormVisible ? <Photo src={ photo } /> : null }
-                { (photo || previewUrl) && isFormVisible && !dPhoto
-                    ?
-                    <Section className="right-section">
-                        <DeletePhoto onClick={ onDeletePhoto }>X</DeletePhoto>
-                        <Photo src={ previewUrl || "" } />
-                    </Section>
-                    : null
                 }
             </Column>
             { user?.uid === userId
@@ -204,6 +204,17 @@ export default function Post({ username, photo, post, userId, id }:IPost) {
                 </Column>
                 : null
             }
+            <Column className="photo-container">
+                { photo && !isFormVisible ? <Photo src={ photo } /> : null }
+                { (photo || previewUrl) && isFormVisible && !dPhoto
+                    ?
+                    <Section className="right-section">
+                        <DeletePhoto onClick={ onDeletePhoto }>X</DeletePhoto>
+                        <Photo src={ previewUrl || "" } />
+                    </Section>
+                    : null
+                }
+            </Column>
         </Wrapper>
     );
 }

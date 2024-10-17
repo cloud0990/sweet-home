@@ -10,12 +10,5 @@ export default defineConfig({
     watch: {
       usePolling: true
     }
-  },
-    resolve: {
-        alias: {
-            '@': '/src',
-            '@components': '/src/components',
-            '@styles': '/src/styles',
-        }
-    }
+  }
 })

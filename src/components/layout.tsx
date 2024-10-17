@@ -1,6 +1,9 @@
 import {Link, Outlet, useNavigate} from "react-router-dom";
 import styled from "styled-components";
-import {auth} from "../firebase.ts";
+import {auth, db} from "../firebase.ts";
+import {useEffect, useState} from "react";
+import {collection, onSnapshot, query, Unsubscribe, where} from "firebase/firestore";
+import {AvatarImg} from "../styles/common/common-components.ts"
 
 const Wrapper = styled.div`
   display: grid;
@@ -43,13 +46,8 @@ const MenuItem = styled.div`
     opacity: 0.7;
   }
 `;
-
-/*const AvatarImg = styled.img`
-  width: 100%;
-`;*/
-
 export default function Layout() {
-    // const user = auth.currentUser;
+    const user = auth.currentUser;
     const navigate = useNavigate();
     const onLogout = async () => {
         const ok = confirm("로그아웃 하시겠습니까?");
@@ -58,6 +56,26 @@ export default function Layout() {
             navigate("/login");
         }
     };
+
+    const [avatarURL, setAvatarURL] = useState<string | null>(null);
+    useEffect(() => {
+        let unsubscribe : Unsubscribe | null = null;
+
+        (async () => {
+            const postQuery = query(
+                collection(db, "users"),
+                where("userId", "==", user?.uid),
+            );
+
+            unsubscribe = onSnapshot(postQuery, (snapshot) => {
+                setAvatarURL(snapshot.docs[0].data().avatarURL)
+            });
+        })();
+
+        return () => {
+            unsubscribe && unsubscribe();
+        };
+    }, []);
 
     return (
         <Wrapper>
@@ -71,15 +89,12 @@ export default function Layout() {
                 </Link>
                 <Link to="/profile">
                     <MenuItem>
-                        {/*{ user.photoURL
-                            ? <AvatarImg src={user.photoURL} />
+                        { avatarURL
+                            ? <AvatarImg src={ avatarURL } />
                             : <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                   <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
                               </svg>
-                        }*/}
-                        <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
-                        </svg>
+                        }
                     </MenuItem>
                 </Link>
                     <MenuItem onClick={ onLogout } className="log-out">

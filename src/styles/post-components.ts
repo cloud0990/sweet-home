@@ -9,6 +9,11 @@ export const Wrapper = styled.div`
   border-radius: 15px;
   background-color: #ffffff;
   position: relative;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
 `;
 export const Column = styled.div`
   &.photo-container {
@@ -18,8 +23,11 @@ export const Column = styled.div`
   }
   &.setting-container {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    grid-row: 1;
+    left: 64%;
+    @media (max-width: 480px) {
+      left: 87%;
+    }
   }
 `;
 export const Section = styled.div`
@@ -30,14 +38,21 @@ export const Section = styled.div`
   }
   &.right-section {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-left: 10px;
+    width: 100%;
+    margin-top: 30px;
+    //display: flex;
+    //align-items: center;
+    //justify-content: center;
+    @media (max-width: 480px) {
+      margin-top: 10px;
+    }
   }
 `;
 export const Photo = styled.img`
-  width: 125px;
-  height: 125px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 export const DeletePhoto = styled.button`
   background-color: black;
@@ -50,13 +65,19 @@ export const DeletePhoto = styled.button`
   height: 25px;
   position: absolute;
   z-index: 10;
-  top: -10%;
-  left: -7%;
+  top: -6%;
+  left: -6%;
   display: flex;
   justify-content: center;
   align-items: center;
   &:hover {
     opacity: 0.8;
+  }
+  @media (max-width: 480px) {
+    width: 20px;
+    height: 20px;
+    top: -3%;
+    left: -3%;
   }
 `;
 export const User = styled.label`
@@ -72,29 +93,19 @@ export const User = styled.label`
     height: 50px;
   }
   @media (max-width: 480px) {
-    width: 60px;
-    height: 60px;
     svg {
-      width: 60px;
-      height: 60px;
+      width: 40px;
+      height: 40px;
     }
   }
-`;
-export const AvatarImg = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
 `;
 export const Username = styled.span`
   font-weight: 600;
   font-size: 16px;
   margin-right: auto;
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
 `;
 export const Setting = styled.div`
   svg {
@@ -110,6 +121,9 @@ export const Setting = styled.div`
 export const Payload = styled.p`
   margin: 10px 0px;
   font-size: 18px;
+  @media (max-width: 480px) {
+    font-size: 15px;
+  }
 `;
 export const Form = styled.form`
   display: flex;
@@ -117,72 +131,88 @@ export const Form = styled.form`
   gap: 10px;
 `;
 export const TextArea = styled.textarea`
-  border: 1px solid gray;
-  margin-top: 10px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  border: 1px solid #ccc;
   padding: 20px;
   border-radius: 20px;
   font-size: 16px;
-  color: black;
+  color: #333;
   width: 100%;
   resize: none;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   &:focus {
+    border-color: #b0c4de;
+    box-shadow: 0 0px 8px rgba(176, 196, 222, 0.4);
     outline: none;
-    border-color: black;
+  }
+  @media (max-width: 480px) {
+    font-size: 13px;
   }
 `;
 export const AttachFileLabel = styled.label`
+  background-color: #e9ecef;
   text-align: center;
   padding: 5px 10px;
   color: black;
-  border-radius: 5px;
-  border: 1px solid gray;
+  border-radius: 25px;
+  border: 1px solid #ccc;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   &:hover {
-    opacity: 0.8;
+    //opacity: 0.8;
+    background-color: #ccc;
+    transform: translateY(-3px);
+  }
+  @media (max-width: 480px) {
+    font-size: 11px;
   }
 `;
 export const AttachFileInput = styled.input`
   display: none;
 `;
 export const SubmitBtn = styled.input`
-  background-color: black;
+  background-color: #b0c4de;
   color: white;
   border: none;
+  border-radius: 20px;
   padding: 5px 10px;
-  border-radius: 5px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   &:hover {
-    opacity: 0.8;
+    background-color: #a0b0c0;
+    transform: translateY(-3px);
+  }
+  @media (max-width: 480px) {
+    font-size: 11px;
   }
 `;
 export const CancelBtn = styled.button`
   background-color: gray;
   color: white;
-  border: 0;
+  border: none;
   padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   &:hover {
     opacity: 0.8;
   }
+  @media (max-width: 480px) {
+    font-size: 11px;
+  }
 `;
 export const Details = styled.div`
   position: absolute;
-  width: calc(100% + 100%);
   font-size: 12px;
-  left: 100%;
   top: 0;
+  left: -150%;
   background-color: #f4f6f9;
   border: 1px solid #ddd;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 10;
   &::before {
     content: "";
     width: 0;
@@ -192,12 +222,12 @@ export const Details = styled.div`
     border-bottom: 10px solid #ddd;
     position: absolute;
     top: 15%;
-    left: -15px;
-    transform: rotate(-90deg);
+    left: 90%;
+    transform: rotate(-270deg);
   }
   @media (max-width: 480px) {
-    width: 120px;
-    font-size: 10px;
+    font-size: 8px;
+    left: -120%;
   }
 `;
 export const Detail = styled.div`
@@ -205,7 +235,7 @@ export const Detail = styled.div`
   padding: 10px;
   cursor: pointer;
   &:hover {
-    background-color: #f0f0f0; /* 원래 색상으로 유지 */
+    background-color: #f0f0f0;
   }
   @media (max-width: 480px) {
     padding: 8px;

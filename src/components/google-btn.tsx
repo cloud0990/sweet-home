@@ -35,17 +35,19 @@ export default function GoogleButton() {
         try {
             const provider = new GoogleAuthProvider();
             await signInWithPopup(auth, provider);
+            // await signInWithRedirect(auth, provider);
             navigate("/");
+
         } catch (e) {
             if (e instanceof FirebaseError) {
-                alert(e)
+                alert(e);
                 // setError(e.message);
             }
         }
     }
 
     return (
-        <Button onClick={onClick}>
+        <Button onClick={ onClick }>
             <Logo src="google-logo.svg" />
             구글 로 계속하기
         </Button>
